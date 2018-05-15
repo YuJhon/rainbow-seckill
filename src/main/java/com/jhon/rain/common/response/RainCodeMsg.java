@@ -22,7 +22,6 @@ public class RainCodeMsg {
    */
   @Getter
   private String msg;
-
   /** 通用的错误码 **/
   public static RainCodeMsg SUCCESS = new RainCodeMsg(0, "success");
 
@@ -31,6 +30,12 @@ public class RainCodeMsg {
 
   /** 系统繁忙，请稍后再试 **/
   public static RainCodeMsg SERVER_ERROR = new RainCodeMsg(500900, "系统繁忙，请稍后再试！");
+
+  /** 手机号不存在 **/
+  public static final RainCodeMsg MOBILE_NOT_EXIST = new RainCodeMsg(100100,"手机号不存在");
+
+  /** 密码错误 **/
+  public static final RainCodeMsg PASSWORD_ERROR = new RainCodeMsg(1001001,"密码错误");
 
   private RainCodeMsg(){}
 

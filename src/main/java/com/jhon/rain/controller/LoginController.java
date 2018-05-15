@@ -1,11 +1,16 @@
 package com.jhon.rain.controller;
 
 import com.jhon.rain.common.response.RainResponse;
+import com.jhon.rain.pojo.vo.LoginVO;
+import com.jhon.rain.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>功能描述</br>用户登录</p>
@@ -19,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class LoginController {
 
+  @Autowired
+  private UserService userService;
 
   @GetMapping("/gotoLogin")
   public String gotoLogin() {
@@ -28,7 +35,8 @@ public class LoginController {
 
   @PostMapping("/doLogin")
   @ResponseBody
-  public RainResponse<String> doLogin() {
-    return RainResponse.success("");
+  public RainResponse<String> doLogin(HttpServletResponse response,LoginVO vo) {
+    String token = userService.loginProcess(response,vo);
+    return RainResponse.success(token);
   }
 }

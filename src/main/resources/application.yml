@@ -65,3 +65,13 @@ pagehelper:
   reasonable: false # 如果为true则，当前页大于总的页数时，默认去最后一页数据，如果为0或者负数，则默认取第一页
   support-methods-arguments: true
   params: count=countSql
+
+#redis
+redis:
+  host: 127.0.0.1
+  port: 6379
+  timeout: 10
+  password: jhonrain
+  poolMaxTotal: 1000
+  poolMaxIdle: 500
+  poolMaxWait: 500

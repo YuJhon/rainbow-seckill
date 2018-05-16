@@ -29,4 +29,11 @@ public class UserContext {
   public static User getUser() {
     return userContextHolder.get();
   }
+
+  /**
+   * 清空数据
+   */
+  public static void remove() {
+    userContextHolder.remove();
+  }
 }

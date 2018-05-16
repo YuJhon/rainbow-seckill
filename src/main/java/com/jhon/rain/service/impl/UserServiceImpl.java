@@ -43,7 +43,12 @@ public class UserServiceImpl implements UserService {
       return user;
     }
     /** 缓存中没有的话就从数据库查询 **/
-    return userDAO.getUserByPhone(phone);
+    user = userDAO.getUserByPhone(phone);
+    /** 缓存中存放一份 **/
+    if (user != null) {
+      redisHelper.set(SeckillUserKey.getByPhone, phone, User.class);
+    }
+    return user;
   }
 
   @Override

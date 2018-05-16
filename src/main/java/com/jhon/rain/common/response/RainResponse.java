@@ -26,7 +26,7 @@ public class RainResponse<T> {
   private T data;
 
   public static <T> RainResponse<T> success(T data) {
-    return new RainResponse<T>(data);
+    return new RainResponse<T>(0,data);
   }
 
   public static <T> RainResponse<T> error(RainCodeMsg codeMsg) {
@@ -34,6 +34,10 @@ public class RainResponse<T> {
   }
 
   private RainResponse(T data) {
+    this.data = data;
+  }
+  private RainResponse(int code,T data) {
+    this.code = code;
     this.data = data;
   }
 

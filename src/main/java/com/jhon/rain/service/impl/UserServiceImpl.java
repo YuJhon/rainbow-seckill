@@ -11,6 +11,7 @@ import com.jhon.rain.dao.UserDAO;
 import com.jhon.rain.entity.User;
 import com.jhon.rain.pojo.vo.LoginVO;
 import com.jhon.rain.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,6 +88,18 @@ public class UserServiceImpl implements UserService {
     user.setPassword(toBeUpdate.getPassword());
     redisHelper.set(SeckillUserKey.token, token, user);
     return true;
+  }
+
+  @Override
+  public User getByToken(HttpServletResponse response, String token) {
+    if (StringUtils.isEmpty(token)) {
+      return null;
+    }
+    User user = redisHelper.get(SeckillUserKey.token, token, User.class);
+    if (user != null) {
+      addCookie(response, token, user);
+    }
+    return user;
   }
 
   /**

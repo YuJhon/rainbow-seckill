@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * <p>功能描述</br>用户登录</p>
@@ -35,7 +36,7 @@ public class LoginController {
 
   @PostMapping("/doLogin")
   @ResponseBody
-  public RainResponse<String> doLogin(HttpServletResponse response,LoginVO vo) {
+  public RainResponse<String> doLogin(HttpServletResponse response,@Valid LoginVO vo) {
     String token = userService.loginProcess(response,vo);
     return RainResponse.success(token);
   }

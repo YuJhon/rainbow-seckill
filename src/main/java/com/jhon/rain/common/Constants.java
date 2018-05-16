@@ -34,4 +34,9 @@ public class Constants {
    * mobile的标识
    */
   public static final String PHONE = "mobile";
+
+  /**
+   * 接入标识
+   **/
+  public static final String ACCESS = "access";
 }

@@ -41,4 +41,13 @@ public interface UserService {
    * @return
    */
   boolean updatePassword(String token, String mobile, String formPass);
+
+  /**
+   * <pre>通过token查询用户</pre>
+   *
+   * @param response
+   * @param token
+   * @return
+   */
+  User getByToken(HttpServletResponse response, String token);
 }

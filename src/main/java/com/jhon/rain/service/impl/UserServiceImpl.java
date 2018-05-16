@@ -71,6 +71,24 @@ public class UserServiceImpl implements UserService {
     return token;
   }
 
+  @Override
+  public boolean updatePassword(String token, String mobile, String formPass) {
+    User user = getUserByPhone(mobile);
+    if (user == null) {
+      throw new RainGlobalException(RainCodeMsg.MOBILE_NOT_EXIST);
+    }
+    /** 更新数据库 **/
+    User toBeUpdate = new User();
+    toBeUpdate.setMobile(mobile);
+    toBeUpdate.setPassword(EncryptUtil.formPassToDBPass(formPass, user.getSalt()));
+    userDAO.update(toBeUpdate);
+    /** 更新缓存 **/
+    redisHelper.delete(SeckillUserKey.getByPhone, mobile);
+    user.setPassword(toBeUpdate.getPassword());
+    redisHelper.set(SeckillUserKey.token, token, user);
+    return true;
+  }
+
   /**
    * <pre>添加cookie</pre>
    *

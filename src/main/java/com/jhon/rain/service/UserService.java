@@ -17,6 +17,7 @@ public interface UserService {
 
   /**
    * <pre>通过手机号查询用户</pre>
+   *
    * @param phone
    * @return
    */
@@ -24,9 +25,20 @@ public interface UserService {
 
   /**
    * <pre>登录操作</pre>
+   *
    * @param response
    * @param vo
    * @return
    */
   String loginProcess(HttpServletResponse response, LoginVO vo);
+
+  /**
+   * <pre>更新密码</pre>
+   *
+   * @param token
+   * @param mobile
+   * @param formPass
+   * @return
+   */
+  boolean updatePassword(String token, String mobile, String formPass);
 }

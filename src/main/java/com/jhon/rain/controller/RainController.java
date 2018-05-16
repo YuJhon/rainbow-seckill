@@ -19,6 +19,7 @@ public class RainController {
 
   @GetMapping("/index")
   public String index(Model model) {
+
     model.addAttribute("name", "Jhon");
     return "index";
   }

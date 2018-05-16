@@ -1,4 +1,5 @@
 ## 秒杀
+[![Build Status](https://www.travis-ci.org/YuJhon/rainbow-seckill.svg?branch=master)](https://www.travis-ci.org/YuJhon/rainbow-seckill)
 
 SETNX — Redis 
 

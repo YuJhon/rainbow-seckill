@@ -30,17 +30,10 @@ public class RainCodeMsg {
    * 校验错误码
    **/
   public static RainCodeMsg BIND_ERROR = new RainCodeMsg(500100, "参数校验异常：%s");
-
   /**
    * 系统繁忙，请稍后再试
    **/
   public static RainCodeMsg SERVER_ERROR = new RainCodeMsg(500900, "系统繁忙，请稍后再试！");
-
-  /**
-   * 手机号不存在
-   **/
-  public static final RainCodeMsg MOBILE_NOT_EXIST = new RainCodeMsg(100100, "手机号不存在");
-
   /**
    * Session不存在或者已经失效
    **/
@@ -52,9 +45,27 @@ public class RainCodeMsg {
   public static final RainCodeMsg ACCESS_LIMIT_REACHED = new RainCodeMsg(5001002, "访问太频繁");
 
   /**
+   * 验证码生成异常
+   */
+  public static final RainCodeMsg GENERATE_VERIFY_CODE_ERROR = new RainCodeMsg(5001003, "验证码生成异常");
+
+  /**
+   * 非法请求
+   */
+  public static final RainCodeMsg REQUEST_ILLEGAL = new RainCodeMsg(5001004, "非法请求");
+
+
+  /*=============================================================================================================*/
+
+  /**
+   * 手机号不存在
+   **/
+  public static final RainCodeMsg MOBILE_NOT_EXIST = new RainCodeMsg(100100, "手机号不存在");
+
+  /**
    * 密码错误
    **/
-  public static final RainCodeMsg PASSWORD_ERROR = new RainCodeMsg(1001001, "密码错误");
+  public static final RainCodeMsg PASSWORD_ERROR = new RainCodeMsg(100101, "密码错误");
 
   private RainCodeMsg() {
   }

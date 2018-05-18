@@ -10,7 +10,7 @@ import com.jhon.rain.common.Constants;
  * @projectName rainbow-seckill
  * @date 2018/5/15 20:13
  */
-public class SeckillUserKey extends BasePrefix {
+public class UserKey extends BasePrefix {
 
   /**
    * <pre>构造器</pre>
@@ -18,18 +18,18 @@ public class SeckillUserKey extends BasePrefix {
    * @param expireSeconds
    * @param prefix
    */
-  public SeckillUserKey(int expireSeconds, String prefix) {
+  public UserKey(int expireSeconds, String prefix) {
     super(expireSeconds, prefix);
   }
 
   /**
    * token
    */
-  public static SeckillUserKey token = new SeckillUserKey(Constants.TOKEN_EXPIRE, Constants.TK);
+  public static UserKey token = new UserKey(Constants.TOKEN_EXPIRE, Constants.TK);
 
   /**
    * mobile
    */
-  public static SeckillUserKey getByPhone = new SeckillUserKey(Constants.NEVER_EXPIRE, Constants.PHONE);
+  public static UserKey getByPhone = new UserKey(Constants.NEVER_EXPIRE, Constants.PHONE);
 
 }

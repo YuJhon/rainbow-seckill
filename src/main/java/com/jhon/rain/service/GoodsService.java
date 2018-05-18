@@ -1,5 +1,9 @@
 package com.jhon.rain.service;
 
+import com.jhon.rain.pojo.vo.GoodsVO;
+
+import java.util.List;
+
 /**
  * <p>功能描述</br>商品服务</p>
  *
@@ -10,4 +14,18 @@ package com.jhon.rain.service;
  */
 public interface GoodsService {
 
+  /**
+   * <pre>获取商品展示列表</pre>
+   *
+   * @return
+   */
+  List<GoodsVO> listGoodsVO();
+
+  /**
+   * <pre>获取商品详细信息</pre>
+   *
+   * @param goodsId
+   * @return
+   */
+  GoodsVO getGoodsVOByGoodsId(long goodsId);
 }

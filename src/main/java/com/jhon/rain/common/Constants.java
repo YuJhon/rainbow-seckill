@@ -39,4 +39,34 @@ public class Constants {
    * 接入标识
    **/
   public static final String ACCESS = "access";
+
+  /**
+   * 验证码相关常量
+   */
+  public class VerifyCodeConstants {
+
+    /**
+     * 验证码图片的宽度
+     */
+    public static final int IMAGE_WIDTH = 80;
+
+    /**
+     * 验证码图片的高度
+     */
+    public static final int IMAGE_HEIGHT = 32;
+
+    /**
+     * 字体大小
+     */
+    public static final int FONT_SIZE = 24;
+
+    /**
+     * 字体名称
+     */
+    public static final String FONT_NAME = "candara";
+    /**
+     * 干扰元素的个数
+     */
+    public static final int CONFUSION_COUNT = 50;
+  }
 }

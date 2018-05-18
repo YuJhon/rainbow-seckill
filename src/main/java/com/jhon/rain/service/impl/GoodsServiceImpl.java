@@ -1,7 +1,12 @@
 package com.jhon.rain.service.impl;
 
+import com.jhon.rain.dao.GoodsDAO;
+import com.jhon.rain.pojo.vo.GoodsVO;
 import com.jhon.rain.service.GoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>功能描述</br>商品服务接口实现类</p>
@@ -14,4 +19,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
+  @Autowired
+  private GoodsDAO goodsDAO;
+
+  @Override
+  public List<GoodsVO> listGoodsVO() {
+    return goodsDAO.listGoodsVO();
+  }
+
+  @Override
+  public GoodsVO getGoodsVOByGoodsId(long goodsId) {
+    return goodsDAO.getGoodsVoByGoodsId(goodsId);
+  }
 }

@@ -2,7 +2,7 @@ package com.jhon.rain.service.impl;
 
 import com.jhon.rain.common.Constants;
 import com.jhon.rain.common.exception.RainGlobalException;
-import com.jhon.rain.common.keyprefix.SeckillUserKey;
+import com.jhon.rain.common.keyprefix.UserKey;
 import com.jhon.rain.common.redis.RedisHelper;
 import com.jhon.rain.common.response.RainCodeMsg;
 import com.jhon.rain.common.utils.EncryptUtil;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getUserByPhone(String phone) {
     /** 先从缓存中查询 **/
-    User user = redisHelper.get(SeckillUserKey.getByPhone, phone, User.class);
+    User user = redisHelper.get(UserKey.getByPhone, phone, User.class);
     if (user != null) {
       return user;
     }
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     user = userDAO.getUserByPhone(phone);
     /** 缓存中存放一份 **/
     if (user != null) {
-      redisHelper.set(SeckillUserKey.getByPhone, phone, user);
+      redisHelper.set(UserKey.getByPhone, phone, user);
     }
     return user;
   }
@@ -89,9 +89,9 @@ public class UserServiceImpl implements UserService {
     toBeUpdate.setPassword(EncryptUtil.formPassToDBPass(formPass, user.getSalt()));
     userDAO.update(toBeUpdate);
     /** 更新缓存 **/
-    redisHelper.delete(SeckillUserKey.getByPhone, mobile);
+    redisHelper.delete(UserKey.getByPhone, mobile);
     user.setPassword(toBeUpdate.getPassword());
-    redisHelper.set(SeckillUserKey.token, token, user);
+    redisHelper.set(UserKey.token, token, user);
     return true;
   }
 
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     if (StringUtils.isEmpty(token)) {
       return null;
     }
-    User user = redisHelper.get(SeckillUserKey.token, token, User.class);
+    User user = redisHelper.get(UserKey.token, token, User.class);
     if (user != null) {
       addCookie(response, token, user);
     }
@@ -116,10 +116,10 @@ public class UserServiceImpl implements UserService {
    */
   private void addCookie(HttpServletResponse response, String token, User user) {
     /** redis中缓存一份 **/
-    redisHelper.set(SeckillUserKey.token, token, user);
+    redisHelper.set(UserKey.token, token, user);
     /** 设置到cookie中  **/
     Cookie cookie = new Cookie(Constants.COOKIE_NAME_TOKEN, token);
-    cookie.setMaxAge(SeckillUserKey.token.expireSeconds());
+    cookie.setMaxAge(UserKey.token.expireSeconds());
     cookie.setPath("/");
     response.addCookie(cookie);
   }

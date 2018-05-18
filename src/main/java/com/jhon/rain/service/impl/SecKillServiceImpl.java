@@ -1,9 +1,13 @@
 package com.jhon.rain.service.impl;
 
 import com.jhon.rain.common.Constants;
+import com.jhon.rain.common.keyprefix.OrderKey;
 import com.jhon.rain.common.keyprefix.SecKillKey;
 import com.jhon.rain.common.redis.RedisHelper;
+import com.jhon.rain.common.utils.EncryptUtil;
+import com.jhon.rain.common.utils.UUIDUtil;
 import com.jhon.rain.common.utils.VerifyCodeUtil;
+import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.entity.User;
 import com.jhon.rain.service.SecKillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.net.Inet4Address;
 import java.util.Random;
 
 /**
@@ -77,11 +80,46 @@ public class SecKillServiceImpl implements SecKillService {
 
   @Override
   public String generateSecKillPath(User user, Long goodsId) {
-    return null;
+    if (user == null || goodsId <= 0) {
+      return null;
+    }
+    String path = EncryptUtil.md5(UUIDUtil.uuid() + Constants.VerifyCodeConstants.SALT);
+    redisHelper.set(SecKillKey.secKillPath, user.getMobile() + "-" + goodsId, path);
+    return path;
+  }
+
+
+  @Override
+  public boolean checkPath(User user, Long goodsId, String path) {
+    if (user == null || path == null) {
+      return false;
+    }
+    String dbPath = redisHelper.get(SecKillKey.secKillPath, user.getMobile() + "-" + goodsId, String.class);
+    return path.equals(dbPath);
   }
 
   @Override
   public long getSecKillResult(User user, Long goodsId) {
-    return 0;
+    SecKillOrder order = redisHelper.get(OrderKey.getSecKillOrderByUidGid, "" + user.getMobile() + "_" + goodsId, SecKillOrder.class);
+    if (order != null) {
+      return order.getOrderId();
+    } else {
+      boolean isOver = getGoodsOver(goodsId);
+      if (isOver) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  /**
+   * <pre>获取商品是否已经秒杀完成了</pre>
+   *
+   * @param goodsId 商品ID
+   * @return
+   */
+  private boolean getGoodsOver(Long goodsId) {
+    return redisHelper.exist(SecKillKey.goodsOver, "" + goodsId);
   }
 }

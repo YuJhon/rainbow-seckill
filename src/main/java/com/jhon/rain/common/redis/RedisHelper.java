@@ -2,6 +2,7 @@ package com.jhon.rain.common.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.jhon.rain.common.keyprefix.KeyPrefix;
+import com.jhon.rain.common.keyprefix.SecKillKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -269,4 +270,5 @@ public class RedisHelper {
       jedis.close();
     }
   }
+
 }

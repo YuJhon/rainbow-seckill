@@ -1,6 +1,11 @@
 package com.jhon.rain.service.impl;
 
+import com.jhon.rain.common.keyprefix.OrderKey;
+import com.jhon.rain.common.redis.RedisHelper;
+import com.jhon.rain.dao.OrderDAO;
+import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,4 +19,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+  @Autowired
+  private OrderDAO orderDAO;
+
+  @Autowired
+  private RedisHelper redisHelper;
+
+  @Override
+  public SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId) {
+    return redisHelper.get(OrderKey.getSecKillOrderByUidGid, mobile + "_" + goodsId, SecKillOrder.class);
+  }
 }

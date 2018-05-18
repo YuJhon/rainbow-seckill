@@ -68,5 +68,10 @@ public class Constants {
      * 干扰元素的个数
      */
     public static final int CONFUSION_COUNT = 50;
+
+    /**
+     * 盐值
+     */
+    public static final String SALT = "123456";
   }
 }

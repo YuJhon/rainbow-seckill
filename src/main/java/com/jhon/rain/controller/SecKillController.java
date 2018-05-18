@@ -1,22 +1,28 @@
 package com.jhon.rain.controller;
 
+import com.jhon.rain.common.keyprefix.GoodsKey;
+import com.jhon.rain.common.redis.RedisHelper;
 import com.jhon.rain.common.response.RainCodeMsg;
 import com.jhon.rain.common.response.RainResponse;
+import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.entity.User;
+import com.jhon.rain.pojo.vo.GoodsVO;
+import com.jhon.rain.service.GoodsService;
+import com.jhon.rain.service.OrderService;
 import com.jhon.rain.service.SecKillService;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>功能描述</br>秒杀控制器</p>
@@ -28,11 +34,35 @@ import java.io.OutputStream;
  */
 @Controller
 @RequestMapping("/secKill")
-public class SecKillController {
+public class SecKillController implements InitializingBean {
 
 
   @Autowired
+  private GoodsService goodsService;
+
+  @Autowired
   private SecKillService secKillService;
+
+  @Autowired
+  private OrderService orderService;
+
+  @Autowired
+  private RedisHelper redisHelper;
+
+  private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    List<GoodsVO> goodsList = goodsService.listGoodsVO();
+    if (goodsList == null){
+      return;
+    }
+    for (GoodsVO goods : goodsList) {
+      redisHelper.set(GoodsKey.getSeckillGoodsStock,""+goods.getId(),goods.getStockCount());
+      localOverMap.put(goods.getId(), false);
+    }
+  }
+
 
   /**
    * <pre>获取验证码</pre>
@@ -73,7 +103,6 @@ public class SecKillController {
   /**
    * <pre>生成秒杀路径</pre>
    *
-   * @param response
    * @param user       用户
    * @param goodsId    商品Id
    * @param verifyCode 验证码
@@ -81,12 +110,13 @@ public class SecKillController {
    */
   @GetMapping("/path")
   @ResponseBody
-  public RainResponse<String> getSecKillPath(HttpServletResponse response, User user,
-                                             @RequestParam("goodsId") Long goodsId,
+  public RainResponse<String> getSecKillPath(User user, @RequestParam("goodsId") Long goodsId,
                                              @RequestParam(value = "verifyCode", defaultValue = "0") int verifyCode) {
+    /** 用户校验 **/
     if (user == null) {
       return RainResponse.error(RainCodeMsg.SESSION_ERROR);
     }
+    /** 验证码的校验 **/
     boolean check = secKillService.checkVerifyCode(user, goodsId, verifyCode);
     if (!check) {
       return RainResponse.error(RainCodeMsg.REQUEST_ILLEGAL);
@@ -95,7 +125,60 @@ public class SecKillController {
     return RainResponse.success(path);
   }
 
+  /**
+   * <pre>秒杀处理</pre>
+   *
+   * @param model   页面模型
+   * @param user    当前登陆用户
+   * @param goodsId 商品ID
+   * @param path    秒杀路径
+   * @return
+   */
+  @PostMapping("/{path}/do_secKill")
+  @ResponseBody
+  public RainResponse<Integer> secKillProcess(Model model, User user,
+                                             @RequestParam("goodsId") Long goodsId,
+                                             @PathVariable("path") String path) {
+    /** 1.用户的校验 **/
+    model.addAttribute("user", user);
+    if (user == null) {
+      return RainResponse.error(RainCodeMsg.SESSION_ERROR);
+    }
+    /** 2.验证path **/
+    boolean check = secKillService.checkPath(user, goodsId, path);
+    if (!check) {
+      return RainResponse.error(RainCodeMsg.REQUEST_ILLEGAL);
+    }
+    /** 3.内存标记，减少redis访问 **/
+    boolean over = localOverMap.get(goodsId);
+    if (over)
+    {
+      return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
+    }
+    /** 4.预减库存 **/
+    long stock = redisHelper.decr(GoodsKey.getSeckillGoodsStock,""+goodsId);
+    if (stock<0){
+      localOverMap.put(goodsId,true);
+      return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
+    }
+    /** 5.判断是否已经秒杀 **/
+    SecKillOrder order = orderService.getSecKillOrderByUserIdGoodsId(user.getMobile(),goodsId);
+    if (order != null){
+      return RainResponse.error(RainCodeMsg.REPEAT_SEC_KILL);
+    }
+    /** 6.发送消息，通知生成订单 **/
 
+    return RainResponse.success(0);
+  }
+
+  /**
+   * <pre>获取秒杀结果</pre>
+   *
+   * @param model   页面视图模型
+   * @param user    当前用户
+   * @param goodsId 商品ID
+   * @return
+   */
   @GetMapping("/result")
   @ResponseBody
   public RainResponse<Long> secKillResult(Model model, User user,
@@ -107,5 +190,6 @@ public class SecKillController {
     long result = secKillService.getSecKillResult(user, goodsId);
     return RainResponse.success(result);
   }
+
 
 }

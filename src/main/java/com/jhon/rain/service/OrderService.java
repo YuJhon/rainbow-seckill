@@ -1,5 +1,7 @@
 package com.jhon.rain.service;
 
+import com.jhon.rain.entity.SecKillOrder;
+
 /**
  * <p>功能描述</br>订单服务接口定义</p>
  *
@@ -9,4 +11,13 @@ package com.jhon.rain.service;
  * @date 2018/5/16 19:55
  */
 public interface OrderService {
+
+  /**
+   * <pre>通过用户和商品信息查询秒杀订单信息</pre>
+   *
+   * @param mobile  用户ID
+   * @param goodsId 商品ID
+   * @return
+   */
+  SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId);
 }

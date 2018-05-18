@@ -13,7 +13,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class SeckillOrder {
+public class SecKillOrder {
 
   /**
    * 主键ID

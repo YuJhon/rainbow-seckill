@@ -25,12 +25,12 @@ public interface SecKillService {
   /**
    * <pre>验证码的校验</pre>
    *
-   * @param user       用户信息
-   * @param goodsId    商品Id
-   * @param verifyCode 验证码
+   * @param user             用户信息
+   * @param goodsId          商品Id
+   * @param verifyCodeResult 验证码
    * @return
    */
-  boolean checkVerifyCode(User user, Long goodsId, int verifyCode);
+  boolean checkVerifyCode(User user, Long goodsId, int verifyCodeResult);
 
   /**
    * <pre>生成秒杀路径</pre>
@@ -49,4 +49,14 @@ public interface SecKillService {
    * @return
    */
   long getSecKillResult(User user, Long goodsId);
+
+  /**
+   * <pre>校验path</pre>
+   *
+   * @param user    用户信息
+   * @param goodsId 商品Id
+   * @param path    路径
+   * @return
+   */
+  boolean checkPath(User user, Long goodsId, String path);
 }

@@ -169,7 +169,7 @@ public class SecKillController implements InitializingBean {
     if (order != null) {
       return RainResponse.error(RainCodeMsg.REPEAT_SEC_KILL);
     }
-    /** 6.发送消息，通知生成订单 **/
+    /** 6.发送消息，通知生成订单 (1.创建唯一索引 2.消息通知)**/
 
     return RainResponse.success(0);
   }

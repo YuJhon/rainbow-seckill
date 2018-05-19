@@ -103,7 +103,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
     if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
       return null;
     }
-    String token = StringUtils.isEmpty(paramToken) ? cookieToken : cookieToken;
+    String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
     return userService.getByToken(response, token);
   }
 

@@ -1,5 +1,6 @@
 package com.jhon.rain.service;
 
+import com.jhon.rain.entity.Order;
 import com.jhon.rain.entity.User;
 import com.jhon.rain.pojo.vo.GoodsVO;
 
@@ -15,6 +16,16 @@ import java.util.List;
  * @date 2018/5/18 9:39
  */
 public interface SecKillService {
+
+  /**
+   * <pre>秒杀操作</pre>
+   *
+   * @param user  用户信息
+   * @param goods 商品信息
+   * @return
+   */
+  Order secKillProcessV1(User user, GoodsVO goods);
+
   /**
    * <pre>生成验证码</pre>
    *
@@ -68,4 +79,6 @@ public interface SecKillService {
    * @param goodsList
    */
   void reset(List<GoodsVO> goodsList);
+
+
 }

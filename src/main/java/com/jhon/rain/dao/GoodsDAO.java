@@ -5,6 +5,7 @@ import com.jhon.rain.pojo.vo.GoodsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -36,6 +37,21 @@ public interface GoodsDAO {
   @Select("select g.*,sg.stock_count,sg.start_date,sg.end_date,sg.miaosha_price from t_seckill_goods sg left join t_goods g on sg.goods_id = g.id where g.id=#{goodsId}")
   GoodsVO getGoodsVoByGoodsId(@Param("goodsId") long goodsId);
 
+  /**
+   * <pre>减小库存</pre>
+   *
+   * @param secKillGoods
+   * @return
+   */
+  @Update("update t_seckill_goods set stock_count = stock_count - 1 where goods_id = #{goodsId} and stock_count > 0")
+  public int reduceStock(SecKillGoods secKillGoods);
 
-  void resetStock(SecKillGoods secKillGoods);
+  /**
+   * <pre>重置</pre>
+   *
+   * @param secKillGoods
+   * @return
+   */
+  @Update("update t_seckill_goods set stock_count = #{stockCount} where goods_id = #{goodsId}")
+  public int resetStock(SecKillGoods secKillGoods);
 }

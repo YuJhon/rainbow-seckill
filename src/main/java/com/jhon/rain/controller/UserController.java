@@ -2,6 +2,7 @@ package com.jhon.rain.controller;
 
 import com.jhon.rain.common.response.RainResponse;
 import com.jhon.rain.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
   /**
@@ -29,6 +31,7 @@ public class UserController {
   @RequestMapping("/info")
   @ResponseBody
   public RainResponse<User> info(Model model, User user) {
+    log.info(Thread.currentThread().getName()+"-------->"+user.getNickname());
     return RainResponse.success(user);
   }
 }

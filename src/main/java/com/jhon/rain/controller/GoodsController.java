@@ -83,27 +83,27 @@ public class GoodsController {
     long startAt = goods.getStartDate().getTime();
     long endAt = goods.getEndDate().getTime();
     long now = System.currentTimeMillis();
-    int seckillStatus = 0;
+    int secKillStatus = 0;
     int remainSeconds = 0;
 
     if (now < startAt) {
       /** 秒杀还没开始 **/
-      seckillStatus = 0;
+      secKillStatus = 0;
       remainSeconds = (int) ((startAt - now) / 1000);
     } else if (now > endAt) {
       /** 秒杀已经结束 **/
-      seckillStatus = 2;
+      secKillStatus = 2;
       remainSeconds = -1;
     } else {
       /** 秒杀进行中 **/
-      seckillStatus = 1;
+      secKillStatus = 1;
       remainSeconds = 0;
     }
     GoodsDetailVO goodsDetail = new GoodsDetailVO();
     goodsDetail.setGoods(goods);
     goodsDetail.setUser(user);
     goodsDetail.setRemainSeconds(remainSeconds);
-    goodsDetail.setMiaoshaStatus(seckillStatus);
+    goodsDetail.setMiaoshaStatus(secKillStatus);
     return RainResponse.success(goodsDetail);
   }
 }

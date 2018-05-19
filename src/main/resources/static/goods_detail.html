@@ -144,9 +144,9 @@
 
     function getSecKillPath() {
         var goodsId = $("#goodsId").val();
-        g_showLoading();
+        g_showloading();
         $.ajax({
-            url: "",
+            url: "/secKill/path",
             type: "GET",
             data: {
                 goodsId: goodsId,

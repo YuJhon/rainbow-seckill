@@ -61,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
     secKillOrder.setUserId(user.getId());
     orderDAO.insertSecKillOrder(secKillOrder);
     // 模拟事务回滚 int a = 1/0;
+    redisHelper.set(OrderKey.getSecKillOrderByUidGid, user.getMobile() + "_" + goods.getId(),secKillOrder);
     return orderInfo;
   }
 }

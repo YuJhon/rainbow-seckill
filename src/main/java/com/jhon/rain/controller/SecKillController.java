@@ -1,6 +1,7 @@
 package com.jhon.rain.controller;
 
 import com.jhon.rain.common.Constants;
+import com.jhon.rain.common.access.AccessLimit;
 import com.jhon.rain.common.keyprefix.GoodsKey;
 import com.jhon.rain.common.keyprefix.OrderKey;
 import com.jhon.rain.common.keyprefix.SecKillKey;
@@ -116,6 +117,7 @@ public class SecKillController implements InitializingBean {
    * @param verifyCode 验证码
    * @return
    */
+  @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
   @GetMapping("/path")
   @ResponseBody
   public RainResponse<String> getSecKillPath(User user, @RequestParam("goodsId") Long goodsId,

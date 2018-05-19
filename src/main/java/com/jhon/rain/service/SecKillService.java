@@ -1,8 +1,10 @@
 package com.jhon.rain.service;
 
 import com.jhon.rain.entity.User;
+import com.jhon.rain.pojo.vo.GoodsVO;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * <p>功能描述</br>秒杀服务</p>
@@ -59,4 +61,11 @@ public interface SecKillService {
    * @return
    */
   boolean checkPath(User user, Long goodsId, String path);
+
+  /**
+   * <pre>重置操作</pre>
+   *
+   * @param goodsList
+   */
+  void reset(List<GoodsVO> goodsList);
 }

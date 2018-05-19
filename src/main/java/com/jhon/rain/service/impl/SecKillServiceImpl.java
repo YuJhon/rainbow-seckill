@@ -7,15 +7,20 @@ import com.jhon.rain.common.redis.RedisHelper;
 import com.jhon.rain.common.utils.EncryptUtil;
 import com.jhon.rain.common.utils.UUIDUtil;
 import com.jhon.rain.common.utils.VerifyCodeUtil;
+import com.jhon.rain.dao.GoodsDAO;
+import com.jhon.rain.dao.OrderDAO;
 import com.jhon.rain.entity.SecKillOrder;
+import com.jhon.rain.entity.SecKillGoods;
 import com.jhon.rain.entity.User;
+import com.jhon.rain.pojo.vo.GoodsVO;
 import com.jhon.rain.service.SecKillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 /**
  * <p>功能描述</br>秒杀业务逻辑实现</p>
@@ -30,6 +35,12 @@ public class SecKillServiceImpl implements SecKillService {
 
   @Autowired
   private RedisHelper redisHelper;
+
+  @Autowired
+  private OrderDAO orderDAO;
+
+  @Autowired
+  private GoodsDAO goodsDAO;
 
   @Override
   public BufferedImage generateVerifyCode(User user, long goodsId) {
@@ -96,6 +107,34 @@ public class SecKillServiceImpl implements SecKillService {
     }
     String dbPath = redisHelper.get(SecKillKey.secKillPath, user.getMobile() + "-" + goodsId, String.class);
     return path.equals(dbPath);
+  }
+
+  @Override
+  public void reset(List<GoodsVO> goodsList) {
+    this.resetStock(goodsList);
+    this.deleteOrders();
+  }
+
+  /**
+   * <pre>重置库存</pre>
+   *
+   * @param goodsList
+   */
+  public void resetStock(List<GoodsVO> goodsList) {
+    for (GoodsVO goods : goodsList) {
+      SecKillGoods secKillGoods = new SecKillGoods();
+      secKillGoods.setGoodsId(goods.getId());
+      secKillGoods.setStockCount(goods.getStockCount());
+      goodsDAO.resetStock(secKillGoods);
+    }
+  }
+
+  /**
+   * <pre>删除订单信息</pre>
+   */
+  public void deleteOrders() {
+    orderDAO.deleteOrders();
+    orderDAO.deleteSecKillOrders();
   }
 
   @Override

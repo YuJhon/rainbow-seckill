@@ -1,5 +1,6 @@
 package com.jhon.rain.dao;
 
+import com.jhon.rain.entity.SecKillGoods;
 import com.jhon.rain.pojo.vo.GoodsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -34,4 +35,7 @@ public interface GoodsDAO {
    */
   @Select("select g.*,sg.stock_count,sg.start_date,sg.end_date,sg.miaosha_price from t_seckill_goods sg left join t_goods g on sg.goods_id = g.id where g.id=#{goodsId}")
   GoodsVO getGoodsVoByGoodsId(@Param("goodsId") long goodsId);
+
+
+  void resetStock(SecKillGoods secKillGoods);
 }

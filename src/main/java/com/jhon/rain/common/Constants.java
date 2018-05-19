@@ -73,5 +73,10 @@ public class Constants {
      * 盐值
      */
     public static final String SALT = "123456";
+
+    /**
+     * 图片格式
+     */
+    public static final String IMG_FORMAT = "JPEG";
   }
 }

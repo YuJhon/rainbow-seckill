@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @ToString
-public class SeckillGoods {
+public class SecKillGoods {
 
   /**
    * 主键ID

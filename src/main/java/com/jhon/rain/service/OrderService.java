@@ -1,5 +1,6 @@
 package com.jhon.rain.service;
 
+import com.jhon.rain.entity.Order;
 import com.jhon.rain.entity.SecKillOrder;
 
 /**
@@ -20,4 +21,12 @@ public interface OrderService {
    * @return
    */
   SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId);
+
+  /**
+   * <pre>通过订单Id查询订单</pre>
+   *
+   * @param orderId
+   * @return
+   */
+  Order getOrderById(Long orderId);
 }

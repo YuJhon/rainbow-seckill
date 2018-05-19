@@ -46,7 +46,6 @@ public class RainCodeMsg {
    * 验证码生成异常
    */
   public static final RainCodeMsg GENERATE_VERIFY_CODE_ERROR = new RainCodeMsg(5001003, "验证码生成异常");
-
   /**
    * 非法请求
    */
@@ -59,20 +58,25 @@ public class RainCodeMsg {
    **/
   public static final RainCodeMsg MOBILE_NOT_EXIST = new RainCodeMsg(100100, "手机号不存在");
 
-
   /**
    * 密码错误
    **/
   public static final RainCodeMsg PASSWORD_ERROR = new RainCodeMsg(100101, "密码错误");
 
+
   /**
    * 秒杀已经结束
    */
   public static final RainCodeMsg SEC_KILL_OVER = new RainCodeMsg(100102, "秒杀已经结束");
+
   /**
    * 不能重复秒杀
    */
   public static final RainCodeMsg REPEAT_SEC_KILL = new RainCodeMsg(100103, "不能重复秒杀");
+  /**
+   * 订单不存在
+   */
+  public static final RainCodeMsg ORDER_NOT_EXIST = new RainCodeMsg(100104, "订单不存在");
 
   private RainCodeMsg() {
   }

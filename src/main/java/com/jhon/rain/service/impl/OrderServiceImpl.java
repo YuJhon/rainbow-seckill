@@ -3,6 +3,7 @@ package com.jhon.rain.service.impl;
 import com.jhon.rain.common.keyprefix.OrderKey;
 import com.jhon.rain.common.redis.RedisHelper;
 import com.jhon.rain.dao.OrderDAO;
+import com.jhon.rain.entity.Order;
 import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,10 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId) {
     return redisHelper.get(OrderKey.getSecKillOrderByUidGid, mobile + "_" + goodsId, SecKillOrder.class);
+  }
+
+  @Override
+  public Order getOrderById(Long orderId) {
+    return orderDAO.getOrderById(orderId);
   }
 }

@@ -2,6 +2,8 @@ package com.jhon.rain.service;
 
 import com.jhon.rain.entity.Order;
 import com.jhon.rain.entity.SecKillOrder;
+import com.jhon.rain.entity.User;
+import com.jhon.rain.pojo.vo.GoodsVO;
 
 /**
  * <p>功能描述</br>订单服务接口定义</p>
@@ -25,8 +27,16 @@ public interface OrderService {
   /**
    * <pre>通过订单Id查询订单</pre>
    *
-   * @param orderId
+   * @param orderId 订单ID
    * @return
    */
   Order getOrderById(Long orderId);
+
+  /**
+   * <pre>创建订单信息</pre>
+   * @param user 用户信息
+   * @param goods 商品信息
+   * @return
+   */
+  Order createOrderInfo(User user, GoodsVO goods);
 }

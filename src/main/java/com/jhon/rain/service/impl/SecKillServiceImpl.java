@@ -14,7 +14,10 @@ import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.entity.SecKillGoods;
 import com.jhon.rain.entity.User;
 import com.jhon.rain.pojo.vo.GoodsVO;
+import com.jhon.rain.service.GoodsService;
+import com.jhon.rain.service.OrderService;
 import com.jhon.rain.service.SecKillService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,7 @@ import java.util.List;
  * @date 2018/5/18 9:51
  */
 @Service
+@Slf4j
 public class SecKillServiceImpl implements SecKillService {
 
   @Autowired
@@ -44,15 +48,26 @@ public class SecKillServiceImpl implements SecKillService {
   @Autowired
   private GoodsDAO goodsDAO;
 
+  @Autowired
+  private GoodsService goodsService;
+
+  @Autowired
+  private OrderService orderService;
+
   @Override
   @Deprecated
   @Transactional
   public Order secKillProcessV1(User user, GoodsVO goods) {
-    /** 减少库存 **/
+    /** 减少库存
     SecKillGoods secKillGoods = new SecKillGoods();
     secKillGoods.setGoodsId(goods.getId());
-    goodsDAO.reduceStock(secKillGoods);
-    /** 创建订单 **/
+    int records = goodsDAO.reduceStock(secKillGoods);
+    if (records<0){
+      log.info("《《《《《《《《《《更新失败》》》》》》》》》");
+      return null;
+    }
+
+    创建订单
     Order orderInfo = new Order();
     orderInfo.setCreateDate(new Date());
     orderInfo.setDeliveryAddrId(0L);
@@ -71,7 +86,13 @@ public class SecKillServiceImpl implements SecKillService {
     orderDAO.insertSecKillOrder(secKillOrder);
 
     redisHelper.set(OrderKey.getSecKillOrderByUidGid, "" + user.getId() + "_" + goods.getId(), secKillOrder);
-    return orderInfo;
+    **/
+
+    boolean result = goodsService.reduceStock(goods);
+    if (!result){
+      return null;
+    }
+    return orderService.createOrderInfo(user,goods);
   }
 
   @Override

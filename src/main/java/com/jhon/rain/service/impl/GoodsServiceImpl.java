@@ -1,6 +1,7 @@
 package com.jhon.rain.service.impl;
 
 import com.jhon.rain.dao.GoodsDAO;
+import com.jhon.rain.entity.SecKillGoods;
 import com.jhon.rain.pojo.vo.GoodsVO;
 import com.jhon.rain.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,13 @@ public class GoodsServiceImpl implements GoodsService {
   @Override
   public GoodsVO getGoodsVOByGoodsId(long goodsId) {
     return goodsDAO.getGoodsVoByGoodsId(goodsId);
+  }
+
+  @Override
+  public boolean reduceStock(GoodsVO goods) {
+    SecKillGoods secKillGoods = new SecKillGoods();
+    secKillGoods.setGoodsId(goods.getId());
+    int records = goodsDAO.reduceStock(secKillGoods);
+    return records > 0;
   }
 }

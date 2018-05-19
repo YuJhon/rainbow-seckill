@@ -28,4 +28,12 @@ public interface GoodsService {
    * @return
    */
   GoodsVO getGoodsVOByGoodsId(long goodsId);
+
+  /**
+   * <pre>扣减库存</pre>
+   *
+   * @param goods 商品信息
+   * @return
+   */
+  boolean reduceStock(GoodsVO goods);
 }

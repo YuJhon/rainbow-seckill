@@ -10,8 +10,7 @@ install:
   - "echo skipped"
 services:
   - redis-server
-  - mongodb
-  - memcached
+  - rabbitmq
 script:
 #  - "echo skipped"
   - mvn install -Dmaven.javadoc.skip=true

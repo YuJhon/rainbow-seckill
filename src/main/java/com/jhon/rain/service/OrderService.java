@@ -22,7 +22,7 @@ public interface OrderService {
    * @param goodsId 商品ID
    * @return
    */
-  SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId);
+  SecKillOrder getSecKillOrderByUserMobileGoodsId(String mobile, Long goodsId);
 
   /**
    * <pre>通过订单Id查询订单</pre>

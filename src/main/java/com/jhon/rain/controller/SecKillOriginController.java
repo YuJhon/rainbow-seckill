@@ -62,7 +62,7 @@ public class SecKillOriginController {
       return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
     }
     /** 判断是否已经秒杀到了 **/
-    SecKillOrder order = orderService.getSecKillOrderByUserIdGoodsId(user.getMobile(), goodsId);
+    SecKillOrder order = orderService.getSecKillOrderByUserMobileGoodsId(user.getMobile(), goodsId);
     if (order != null) {
       return RainResponse.error(RainCodeMsg.REPEAT_SEC_KILL);
     }

@@ -17,14 +17,32 @@ import java.util.List;
  */
 public interface SecKillService {
 
+
   /**
-   * <pre>秒杀操作</pre>
+   * <pre>秒杀操作V0</pre>
+   *
+   * @param user  用户信息
+   * @param goods 商品信息
+   * @return
+   */
+  Order secKillProcessV0(User user, GoodsVO goods);
+
+  /**
+   * <pre>秒杀操作V1</pre>
    *
    * @param user  用户信息
    * @param goods 商品信息
    * @return
    */
   Order secKillProcessV1(User user, GoodsVO goods);
+
+  /**
+   * <pre>秒杀操作V2</pre>
+   * @param user
+   * @param goods
+   * @return
+   */
+  Order secKillProcessV2(User user, GoodsVO goods);
 
   /**
    * <pre>生成验证码</pre>

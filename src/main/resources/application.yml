@@ -50,6 +50,34 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+  # RabbitMQ配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        #消费者数量
+        concurrency: 10
+        max-concurrency: 10
+        #消费者每次从队列获取的消息数量
+        prefetch: 1
+        #消费者自动启动
+        auto-startup: true
+        #消费失败，自动重新入队
+        default-requeue-rejected: true
+    template:
+      retry:
+        #启用发送重试
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 10000
+        multiplier: 1.0
+
+
 
 # mybatis配置
 mybatis:

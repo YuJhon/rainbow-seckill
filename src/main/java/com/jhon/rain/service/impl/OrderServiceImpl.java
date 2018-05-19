@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
   private RedisHelper redisHelper;
 
   @Override
-  public SecKillOrder getSecKillOrderByUserIdGoodsId(String mobile, Long goodsId) {
+  public SecKillOrder getSecKillOrderByUserMobileGoodsId(String mobile, Long goodsId) {
     return redisHelper.get(OrderKey.getSecKillOrderByUidGid, mobile + "_" + goodsId, SecKillOrder.class);
   }
 

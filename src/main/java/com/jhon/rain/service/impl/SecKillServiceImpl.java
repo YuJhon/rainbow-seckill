@@ -57,17 +57,19 @@ public class SecKillServiceImpl implements SecKillService {
   @Override
   @Deprecated
   @Transactional
-  public Order secKillProcessV1(User user, GoodsVO goods) {
-    /** 减少库存
+  public Order secKillProcessV0(User user, GoodsVO goods) {
+    /** 经过验证：此方法会存在订单数超过库存数 **/
+    /** 减少库存 **/
     SecKillGoods secKillGoods = new SecKillGoods();
     secKillGoods.setGoodsId(goods.getId());
     int records = goodsDAO.reduceStock(secKillGoods);
-    if (records<0){
+    if (records < 0) {
       log.info("《《《《《《《《《《更新失败》》》》》》》》》");
+      long goodsId = goods.getId();
+      markGoodsOver(goodsId);
       return null;
     }
-
-    创建订单
+    /**创建订单**/
     Order orderInfo = new Order();
     orderInfo.setCreateDate(new Date());
     orderInfo.setDeliveryAddrId(0L);
@@ -84,16 +86,34 @@ public class SecKillServiceImpl implements SecKillService {
     secKillOrder.setOrderId(orderId);
     secKillOrder.setUserId(user.getId());
     orderDAO.insertSecKillOrder(secKillOrder);
-
     redisHelper.set(OrderKey.getSecKillOrderByUidGid, "" + user.getId() + "_" + goods.getId(), secKillOrder);
-    **/
+    return orderInfo;
+  }
 
+  @Override
+  @Deprecated
+  @Transactional
+  public Order secKillProcessV1(User user, GoodsVO goods) {
+    /** 此版本已经验证，数据没有问题 **/
     boolean result = goodsService.reduceStock(goods);
-    if (!result){
+    if (!result) {
       return null;
     }
-    return orderService.createOrderInfo(user,goods);
+    return orderService.createOrderInfo(user, goods);
   }
+
+  @Override
+  public Order secKillProcessV2(User user, GoodsVO goods) {
+    boolean result = goodsService.reduceStock(goods);
+    if (result) {
+      return orderService.createOrderInfo(user, goods);
+    } else {
+      long goodsId = goods.getId();
+      markGoodsOver(goodsId);
+      return null;
+    }
+  }
+
 
   @Override
   public BufferedImage generateVerifyCode(User user, long goodsId) {
@@ -213,5 +233,14 @@ public class SecKillServiceImpl implements SecKillService {
    */
   private boolean getGoodsOver(Long goodsId) {
     return redisHelper.exist(SecKillKey.goodsOver, "" + goodsId);
+  }
+
+  /**
+   * <pre>标识商品已经秒杀完成了</pre>
+   *
+   * @param goodsId 商品ID
+   */
+  private void markGoodsOver(long goodsId) {
+    redisHelper.set(SecKillKey.goodsOver, "" + goodsId, true);
   }
 }

@@ -4,11 +4,13 @@ import com.jhon.rain.common.Constants;
 import com.jhon.rain.common.keyprefix.GoodsKey;
 import com.jhon.rain.common.keyprefix.OrderKey;
 import com.jhon.rain.common.keyprefix.SecKillKey;
+import com.jhon.rain.common.rabbitmq.MqSender;
 import com.jhon.rain.common.redis.RedisHelper;
 import com.jhon.rain.common.response.RainCodeMsg;
 import com.jhon.rain.common.response.RainResponse;
 import com.jhon.rain.entity.SecKillOrder;
 import com.jhon.rain.entity.User;
+import com.jhon.rain.pojo.dto.SecKillMessage;
 import com.jhon.rain.pojo.vo.GoodsVO;
 import com.jhon.rain.service.GoodsService;
 import com.jhon.rain.service.OrderService;
@@ -20,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
-import javax.jws.WebParam;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -52,6 +53,9 @@ public class SecKillController implements InitializingBean {
 
   @Autowired
   private RedisHelper redisHelper;
+
+  @Autowired
+  private MqSender mqSender;
 
   private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
 
@@ -130,6 +134,48 @@ public class SecKillController implements InitializingBean {
   }
 
   /**
+   * <pre>秒杀处理(没有加入防止刷接口的策略)</pre>
+   *
+   * @param model   页面模型
+   * @param user    当前登陆用户
+   * @param goodsId 商品ID
+   * @return
+   */
+  @PostMapping("/do_secKill_V0")
+  @ResponseBody
+  public RainResponse<Integer> secKillProcessV0(Model model, User user,
+                                              @RequestParam("goodsId") Long goodsId) {
+    /** 1.用户的校验 **/
+    model.addAttribute("user", user);
+    if (user == null) {
+      return RainResponse.error(RainCodeMsg.SESSION_ERROR);
+    }
+    /** 3.内存标记，减少redis访问 **/
+    boolean over = localOverMap.get(goodsId);
+    if (over) {
+      return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
+    }
+    /** 4.预减库存 **/
+    long stock = redisHelper.decr(GoodsKey.getSeckillGoodsStock, "" + goodsId);
+    if (stock < 0) {
+      localOverMap.put(goodsId, true);
+      return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
+    }
+    /** 5.判断是否已经秒杀 **/
+    SecKillOrder order = orderService.getSecKillOrderByUserMobileGoodsId(user.getMobile(), goodsId);
+    if (order != null) {
+      return RainResponse.error(RainCodeMsg.REPEAT_SEC_KILL);
+    }
+    /** 6.发送消息，通知生成订单 (1.创建唯一索引 2.消息通知)**/
+    SecKillMessage secKillMessage = new SecKillMessage();
+    secKillMessage.setUser(user);
+    secKillMessage.setGoodsId(goodsId);
+    mqSender.sendSecKillMsg(secKillMessage);
+    return RainResponse.success(0);
+  }
+
+
+  /**
    * <pre>秒杀处理</pre>
    *
    * @param model   页面模型
@@ -165,12 +211,15 @@ public class SecKillController implements InitializingBean {
       return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
     }
     /** 5.判断是否已经秒杀 **/
-    SecKillOrder order = orderService.getSecKillOrderByUserIdGoodsId(user.getMobile(), goodsId);
+    SecKillOrder order = orderService.getSecKillOrderByUserMobileGoodsId(user.getMobile(), goodsId);
     if (order != null) {
       return RainResponse.error(RainCodeMsg.REPEAT_SEC_KILL);
     }
     /** 6.发送消息，通知生成订单 (1.创建唯一索引 2.消息通知)**/
-
+    SecKillMessage secKillMessage = new SecKillMessage();
+    secKillMessage.setUser(user);
+    secKillMessage.setGoodsId(goodsId);
+    mqSender.sendSecKillMsg(secKillMessage);
     return RainResponse.success(0);
   }
 

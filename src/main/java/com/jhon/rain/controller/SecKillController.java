@@ -206,7 +206,7 @@ public class SecKillController implements InitializingBean {
     if (over) {
       return RainResponse.error(RainCodeMsg.SEC_KILL_OVER);
     }
-    /** 4.预减库存 **/
+    /** 4.预减库存[TODO 处理有问题：预减库存会导致后面的请求都进不来，所以异常的时候，需要将预减库存数量进行回退] **/
     long stock = redisHelper.decr(GoodsKey.getSeckillGoodsStock, "" + goodsId);
     if (stock < 0) {
       localOverMap.put(goodsId, true);
